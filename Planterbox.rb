@@ -9,27 +9,22 @@ require_relative "PlanterboxBOC.rb"
 
 class Planterbox
 
-    # Define class attributes.
-
-    _rules_file   = ""
-    _repeat_value = 0
-
     # Constructor
 
-    def initialize(rules_file, repeat_value)
+    def initialize(rulesFile, repeat_value)
 
         begin
 
             puts "Initializing Planterbox class." if $INFO
-            @_rules_file = rules_file
-            @_repeat_value = repeat_value
+            @rulesFile = rulesFile
+            @repeat_value = repeat_value
 
         rescue => e
 
-            # Catch, print and throw all exceptions.
+            # Catch, log and throw all exceptions.
 
             puts "Exception: #{e.message}"
-            throw e
+            raise e
 
         end
     end
@@ -37,25 +32,25 @@ class Planterbox
 
     # startPlanting
 
-    def startPlanting()
+    def startPlanting
 
         begin
 
             # Create the Transfer Object.
 
-            planterboxTO = PlanterboxTOC.new(@_rules_file, @repeat_value)
+            planterboxTO = PlanterboxTOC.new(@rulesFile, @repeat_value)
 
             # Create and invoke the Business Object.
 
             planterboxBO = PlanterboxBOC.new(planterboxTO)
-            planterboxBO.plant()
+            planterboxBO.plant
 
         rescue => e
 
-            # Catch, print and throw all exceptions.
+            # Catch, log and throw all exceptions.
 
             puts "ERROR: #{e.message}"
-            throw e
+            raise e
         end
 
 
@@ -113,18 +108,18 @@ begin
 
         # Create the driver class and launch the app.
 
-        rules_file = ARGV[0]
+        rulesFile = ARGV[0]
         repeat_value = ARGV[1]
 
-        myPlanterbox = Planterbox.new(rules_file, repeat_value)
-        myPlanterbox.startPlanting()
+        myPlanterbox = Planterbox.new(rulesFile, repeat_value)
+        myPlanterbox.startPlanting
 
         puts "Planting complete"
     end
 
 rescue => e 
 
-    # Catch and print all exceptions.
+    # Catch and log all exceptions.
 
     puts "FATAL: #{e.message}"
     

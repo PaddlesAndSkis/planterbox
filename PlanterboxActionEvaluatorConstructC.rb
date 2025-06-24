@@ -1,0 +1,53 @@
+# PlanterboxActionEvaluatorConstructC.rb
+
+require_relative "PlanterboxSetActionConstructC.rb"
+
+class PlanterboxActionEvaluatorConstructC
+
+    # Constructor
+
+    def initialize
+
+        begin
+                
+            @actionConstructLibrary = Hash.new
+            @actionConstructLibrary["SET"] = PlanterboxSetActionConstructC.new
+
+
+        rescue => e 
+            # Catch, log and raise all exceptions.
+            puts "ERROR: #{e.message}"
+            raise e
+
+        end
+
+    end
+
+
+    def invokeAction(action, dataDictionary)
+
+        begin
+                
+            # Parse the action.
+
+            # set cam is good;
+
+            constructComponents = action.split(" ")
+            actionComponent = constructComponents[0].upcase.delete('()').strip
+            actionData      = constructComponents
+
+            @actionConstructLibrary[actionComponent].invokeAction(dataDictionary, actionData)
+
+        rescue => e 
+            # Catch, log and raise all exceptions.
+            puts "ERRggOR: #{e.message}"
+            raise e
+
+        end
+
+
+
+    end
+
+
+end

@@ -4,14 +4,15 @@
 
 class PlanterboxTOC
 
-    attr_accessor :_file_name, :_repeat_value
+    attr_accessor :rulesFile, :repeat_value, :ruleArray
 
     # Constructor
 
-    def initialize(file_name = "undefined", repeat_value = 0)
+    def initialize(rulesFile = "undefined", repeat_value = 0, ruleArray = nil)
 
-        @_file_name = file_name
-        @_repeat_value = repeat_value
+        @rulesFile    = rulesFile
+        @repeat_value = repeat_value
+        @ruleArray    = ruleArray
 
     end
 
