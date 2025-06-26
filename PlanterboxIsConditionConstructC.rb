@@ -20,25 +20,31 @@ class PlanterboxIsConditionConstructC < PlanterboxConditionConstructA
 
             # Get the keyword-value from the condition Hash.
 
-            myKey   = conditionHash["keyword"]
+            myKey   = conditionHash["keyword"].upcase
             myValue = conditionHash["value"]
 
             puts "KVP = #{myKey}  #{myValue}"
             # Get the value from the data dictionary.
 
             dataDictionaryValue = dataDictionary[myKey]
+            puts "dataDictionaryValue = #{dataDictionaryValue}"
+            if (dataDictionaryValue == nil)
+                if (myValue == 'empty')
+                    return true
+                else 
+                    return false 
+                end
+            end
 
             if dataDictionaryValue != nil
 
                 if (dataDictionaryValue == myValue)
                  
                     return true
-                end
-            else
-                if (myValue == 'empty')
+                elsif (myValue == 'empty') && (dataDictionaryValue == "")
                     return true
-                end
 
+                end
             end
 
             return false
