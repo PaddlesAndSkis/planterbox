@@ -3,6 +3,8 @@
 require_relative "PlanterboxSetActionConstructC.rb"
 require_relative "PlanterboxMeasureWindSpeedActionConstructC.rb"
 require_relative "PlanterboxMeasureTemperatureActionConstructC.rb"
+require_relative "PlanterboxMeasureApparentTemperatureActionConstructC.rb"
+require_relative "PlanterboxMeasureRainActionConstructC.rb"
 
 class PlanterboxActionEvaluatorConstructC
 
@@ -16,6 +18,8 @@ class PlanterboxActionEvaluatorConstructC
             @actionConstructLibrary["SET"] = PlanterboxSetActionConstructC.new
             @actionConstructLibrary["MEASURE_WIND_SPEED"] = PlanterboxMeasureWindSpeedActionConstructC.new
             @actionConstructLibrary["MEASURE_TEMPERATURE"] = PlanterboxMeasureTemperatureActionConstructC.new
+            @actionConstructLibrary["MEASURE_APPARENT_TEMPERATURE"] = PlanterboxMeasureApparentTemperatureActionConstructC.new
+            @actionConstructLibrary["MEASURE_RAIN"] = PlanterboxMeasureRainActionConstructC.new
 
 
         rescue => e 

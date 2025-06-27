@@ -2,7 +2,7 @@
 
 class PlanterboxActionConstructA
 
-    def invokeAction(dataDictionary, actionData); raise "PlanterboxActionConstructA is abstract."; end
+    def invokeAction(dataDictionary, actionHash); raise "PlanterboxActionConstructA is abstract."; end
 
 
 

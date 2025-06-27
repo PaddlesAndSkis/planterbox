@@ -1,8 +1,8 @@
-# PlanterboxMeasureTemperatureActionConstructC.rb
+# PlanterboxMeasureApparentTemperatureActionConstructC.rb
 
 require_relative "PlanterboxWeatherActionConstructA.rb"
 
-class PlanterboxMeasureTemperatureActionConstructC < PlanterboxWeatherActionConstructA
+class PlanterboxMeasureApparentTemperatureActionConstructC < PlanterboxWeatherActionConstructA
 
     def invokeAction(dataDictionary, actionData)
 
@@ -11,9 +11,9 @@ class PlanterboxMeasureTemperatureActionConstructC < PlanterboxWeatherActionCons
 
             latitude  = dataDictionary["LATITUDE"]
             longitude = dataDictionary["LONGITUDE"]
-            weatherAPIDataString = "temperature_2m"
+            weatherAPIDataString = "apparent_temperature"
 
-            dataDictionary['TEMPERATURE'] = getWeatherData(latitude, longitude, weatherAPIDataString)
+            dataDictionary['APPARENT_TEMPERATURE'] = getWeatherData(latitude, longitude, weatherAPIDataString)
 
             return dataDictionary
 
