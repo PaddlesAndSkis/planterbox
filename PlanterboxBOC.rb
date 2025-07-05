@@ -97,7 +97,8 @@ class PlanterboxBOC
                 condition = rule["Condition"]
 
                 puts "condition:  #{condition}"
-                
+                condition = resolveVariables(condition, dataDictionary)
+
                 
                 planterboxBooleanExpressionEvaluator = PlanterboxBooleanExpressionEvaluatorC.new(condition, dataDictionary)
                 conditionBooleanResult = planterboxBooleanExpressionEvaluator.evaluateBooleanExpression
@@ -109,6 +110,8 @@ class PlanterboxBOC
                     action = rule["Action"]
 
                     puts "Firing.... #{action}"
+
+                    action = resolveVariables(action, dataDictionary)
 
                     planterboxActionEvaluator = PlanterboxActionEvaluatorConstructC.new
                     dataDictionary = planterboxActionEvaluator.invokeAction(action, dataDictionary)
@@ -129,8 +132,57 @@ class PlanterboxBOC
 
 	end
 
-	
+
+    private
 
 
+    def resolveVariables(stringline, dataDictionary)
+
+        begin 
+
+            puts ("===============================stringline = #{stringline}")
+
+            tempStringArray = stringline.split(/(\w*\$\w+\$)/)
+
+            newStringLine = ""
+
+            for token in tempStringArray do
+
+                puts ("Token = #{token}")
+
+                if (token.match(/\w*\$\w+\$/))
+                   puts "VARIABLE!!!!"
+
+                   # Remove the $ delimiters.
+
+                   token.delete! "$"
+                   puts ("NTOKE = #{token}")
+
+                   token = dataDictionary[token.upcase]
+
+                   puts "TOKEN   NOW IS #{token}"
+                end
+
+                newStringLine += token #+ " "
+
+            end
+
+
+        #    if tempString != nil
+
+                puts ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!FINAL = #{newStringLine}")
+       #         puts ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!tempString1 = #{tempString[1]}")
+        #    end
+
+            return newStringLine
+
+        rescue => e 
+            # Catch, log and raise all exceptions.
+
+            puts "ERROR: #{e.message}"
+            raise e 
+        end
+
+	end
 
 end

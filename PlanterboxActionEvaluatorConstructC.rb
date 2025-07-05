@@ -5,6 +5,8 @@ require_relative "PlanterboxMeasureWindSpeedActionConstructC.rb"
 require_relative "PlanterboxMeasureTemperatureActionConstructC.rb"
 require_relative "PlanterboxMeasureApparentTemperatureActionConstructC.rb"
 require_relative "PlanterboxMeasureRainActionConstructC.rb"
+require_relative "PlanterboxToastActionConstructC.rb"
+require_relative "PlanterboxAudifyActionConstructC.rb"
 
 class PlanterboxActionEvaluatorConstructC
 
@@ -20,6 +22,8 @@ class PlanterboxActionEvaluatorConstructC
             @actionConstructLibrary["MEASURE_TEMPERATURE"] = PlanterboxMeasureTemperatureActionConstructC.new
             @actionConstructLibrary["MEASURE_APPARENT_TEMPERATURE"] = PlanterboxMeasureApparentTemperatureActionConstructC.new
             @actionConstructLibrary["MEASURE_RAIN"] = PlanterboxMeasureRainActionConstructC.new
+            @actionConstructLibrary["TOAST"] = PlanterboxToastActionConstructC.new
+            @actionConstructLibrary["AUDIFY"] = PlanterboxAudifyActionConstructC.new
 
 
         rescue => e 
@@ -51,7 +55,7 @@ class PlanterboxActionEvaluatorConstructC
 
         rescue => e 
             # Catch, log and raise all exceptions.
-            puts "ERRggOR: #{e.message}"
+            puts "ERRaaaOR: #{e.message}"
             raise e
 
         end
