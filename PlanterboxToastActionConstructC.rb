@@ -33,6 +33,9 @@ class PlanterboxToastActionConstructC < PlanterboxActionConstructA
 
             toastSink = system(".\\Toasty\\Toasty.exe -m #{messenger} -t #{message}")
 
+            return dataDictionary
+
+
         rescue => e
             # Catch, log and raise all exceptions.
 

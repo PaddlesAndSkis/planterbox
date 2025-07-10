@@ -109,9 +109,10 @@ class PlanterboxBOC
 
                     action = rule["Action"]
 
-                    puts "Firing.... #{action}"
+                    puts "Firing I.... #{action}"
 
                     action = resolveVariables(action, dataDictionary)
+                    puts "Firing II... #{action}"
 
                     planterboxActionEvaluator = PlanterboxActionEvaluatorConstructC.new
                     dataDictionary = planterboxActionEvaluator.invokeAction(action, dataDictionary)

@@ -20,6 +20,9 @@ class PlanterboxAudifyActionConstructC < PlanterboxActionConstructA
 
             toastSink = system(".\\Audify\\Audify.exe -s #{sound}")
 
+            return dataDictionary
+
+
         rescue => e
             # Catch, log and raise all exceptions.
 

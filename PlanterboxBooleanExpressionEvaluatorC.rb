@@ -2,7 +2,9 @@
 
 require_relative "BooleanExpressionEvaluatorA.rb"
 require_relative "PlanterboxIsConditionConstructC.rb"
-#require_relative "PlanterboxConditionConstructContainsC.rb"
+require_relative "PlanterboxContainsConditionConstructC.rb"
+require_relative "PlanterboxLessThanConditionConstructC.rb"
+require_relative "PlanterboxGreaterThanConditionConstructC.rb"
 
 require_relative "PlanterboxSetActionConstructC.rb"
 
@@ -19,7 +21,9 @@ class PlanterboxBooleanExpressionEvaluatorC < BooleanExpressionEvaluatorA
 
             @conditionConstructLibrary = Hash.new
             @conditionConstructLibrary["IS"]   = PlanterboxIsConditionConstructC.new
-          #  @conditionConstructLibrary["CONTAINS"] = PlanterboxConditionConstructContainsC.new
+            @conditionConstructLibrary["CONTAINS"] = PlanterboxContainsConditionConstructC.new
+            @conditionConstructLibrary["LESSTHAN"] = PlanterboxLessThanConditionConstructC.new
+            @conditionConstructLibrary["GREATERTHAN"] = PlanterboxGreaterThanConditionConstructC.new
 
 
         rescue => e 

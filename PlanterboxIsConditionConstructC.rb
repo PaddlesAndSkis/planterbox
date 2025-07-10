@@ -25,6 +25,7 @@ class PlanterboxIsConditionConstructC < PlanterboxConditionConstructA
 
             puts "KVP = #{myKey}  #{myValue}"
             # Get the value from the data dictionary.
+                                    puts "#{dataDictionary}"
 
             dataDictionaryValue = dataDictionary[myKey]
             puts "dataDictionaryValue = #{dataDictionaryValue}"
@@ -46,6 +47,7 @@ class PlanterboxIsConditionConstructC < PlanterboxConditionConstructA
 
                 end
             end
+                        puts "KVP = #{myKey}  #{myValue}"
 
             return false
 
