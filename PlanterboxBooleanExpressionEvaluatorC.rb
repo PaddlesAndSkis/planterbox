@@ -1,12 +1,10 @@
 # PlanterboxBooleanExpressionEvaluatorC.rb
 
 require_relative "BooleanExpressionEvaluatorA.rb"
-require_relative "PlanterboxIsConditionConstructC.rb"
-require_relative "PlanterboxContainsConditionConstructC.rb"
-require_relative "PlanterboxLessThanConditionConstructC.rb"
-require_relative "PlanterboxGreaterThanConditionConstructC.rb"
-
-require_relative "PlanterboxSetActionConstructC.rb"
+require_relative "Conditions/PlanterboxIsConditionConstructC.rb"
+require_relative "Conditions/PlanterboxContainsConditionConstructC.rb"
+require_relative "Conditions/PlanterboxLessThanConditionConstructC.rb"
+require_relative "Conditions/PlanterboxGreaterThanConditionConstructC.rb"
 
 
 class PlanterboxBooleanExpressionEvaluatorC < BooleanExpressionEvaluatorA 

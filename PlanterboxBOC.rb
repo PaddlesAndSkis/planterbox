@@ -7,7 +7,7 @@
 require_relative "PlanterboxTOC.rb"
 require_relative "PlanterboxDAOC.rb"
 require_relative "PlanterboxBooleanExpressionEvaluatorC.rb"
-require_relative "PlanterboxActionEvaluatorConstructC.rb"
+require_relative "Actions/PlanterboxActionEvaluatorConstructC.rb"
 
 class PlanterboxBOC
 
