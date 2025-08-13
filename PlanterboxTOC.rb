@@ -1,18 +1,27 @@
 # PlanterboxTOC.rb
 #
-# Transfer Object
+# The Transfer Object for the Planterbox.
+#
 
 class PlanterboxTOC
 
-    attr_accessor :rulesFile, :repeat_value, :ruleArray
+    # Define attributes.
+
+    attr_accessor :gardenPlanFile, :repeat_value, :plantArray
 
     # Constructor
+    #
+    # [in]: gardenPlanFile - the file containing the gardens to plantArray
+    # [in]: repeat_value - TBD
+    # [in]: plantArray - the global set of plants in the garden
 
-    def initialize(rulesFile = "undefined", repeat_value = 0, ruleArray = nil)
+    def initialize(gardenPlanFile = "undefined", repeat_value = 0, plantArray = nil)
 
-        @rulesFile    = rulesFile
-        @repeat_value = repeat_value
-        @ruleArray    = ruleArray
+        # Set the attributes.
+
+        @gardenPlanFile = gardenPlanFile
+        @repeat_value   = repeat_value
+        @plantArray     = plantArray
 
     end
 

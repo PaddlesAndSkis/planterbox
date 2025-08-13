@@ -1,6 +1,6 @@
 # PlanterboxBOC.rb
 #
-# This is the Planterbox Business Object.
+# The Business Object for Planterbox.
 
 # Import libraries.
 
@@ -9,22 +9,26 @@ require_relative "PlanterboxDAOC.rb"
 require_relative "PlanterboxBooleanExpressionEvaluatorC.rb"
 require_relative "Actions/PlanterboxActionEvaluatorConstructC.rb"
 
+# Class: PlanterboxBOC
+
 class PlanterboxBOC
 
     # Constructor
+    #
+    # [in]: planterboxTO - the transfer object
 
     def initialize(planterboxTO)
 
         begin
+
+            # Initialize the class attributes.
+
             @planterboxTO = planterboxTO
-            @ruleArray = Array.new
+            @plantArray = Array.new
 
-            # Add the ruleArray to the Transfer Object.
+            # Add the plantArray to the Transfer Object.
 
-            @planterboxTO.ruleArray = @ruleArray
-
-
-            @thisClass = "PlanterboxBOC"
+            @planterboxTO.plantArray = @plantArray
 
         rescue => e
             # Catch, log and throw all exceptions.
@@ -41,15 +45,14 @@ class PlanterboxBOC
     def plant
 
         begin
-            puts "#{@thisClass}:plant" if $INFO
 
-            # Load Rules file.
+            # Plant the planterbox with all the plants.
 
-            loadRules
+            plantTheGarden
 
-            # Apply Rules.
+            # Water the plants and see what they do during this growth cycle.
 
-            applyRules
+            waterThePlants
 
         rescue => e
 
@@ -62,17 +65,25 @@ class PlanterboxBOC
     end
 
 
-    def loadRules
+    # Private methods.
+
+    private
+
+
+    # plantTheGarden
+
+    def plantTheGarden
 
         begin
-            puts "#{@thisClass}:loadRules" if $INFO
+
+            # Plant the garden.
 
             planterboxDAO = PlanterboxDAOC.new(@planterboxTO)
-            @planterboxTO = planterboxDAO.loadPlanterbox
+            @planterboxTO = planterboxDAO.fillThePlanterbox
 
-            @ruleArray = @planterboxTO.ruleArray
+            @plantArray = @planterboxTO.plantArray
 
-            puts "loadedRules = #{@ruleArray}"
+            puts "loadedPlants = #{@plantArray}" if $INFO
 
         rescue => e
             # Catch, log and throw all exceptions.
@@ -83,45 +94,61 @@ class PlanterboxBOC
     end
 
 
-    def applyRules
+    # waterThePlants
+
+    def waterThePlants
 
         begin
-            puts "#{@thisClass}:applyRules" if $INFO
+
+            # Initialize a data dictionary Hashtable that will store all the
+            # data.
 
             dataDictionary = Hash.new
 
-            for rule in @ruleArray do
+            # Iterate over the set of plants.
 
-                puts "Evaluiating:  #{rule}"
+            for plant in @plantArray do
 
-                condition = rule["Condition"]
+                puts "Evaluating:  #{plant}" if $DEBUG
 
-                puts "condition:  #{condition}"
+                # Extract the condition for the plant to continue growing.
+
+                condition = plant["Condition"]
+
+                puts "condition:  #{condition}" if $DEBUG
+
+                # Resolve any variables that are present in the condition.
+
                 condition = resolveVariables(condition, dataDictionary)
 
-                
+                # Evaluate the condition.
+
                 planterboxBooleanExpressionEvaluator = PlanterboxBooleanExpressionEvaluatorC.new(condition, dataDictionary)
                 conditionBooleanResult = planterboxBooleanExpressionEvaluator.evaluateBooleanExpression
 
-                puts "FINAL CONDITION BOOLEAN RESULT = #{conditionBooleanResult}"
+                puts "FINAL CONDITION BOOLEAN RESULT = #{conditionBooleanResult}" if $DEBUG
+
+                # If the condition for the plant is True, let the plant grow!
 
                 if conditionBooleanResult
 
-                    action = rule["Action"]
+                    # Get the operation / action that this plant will do during its growth spurt.
 
-                    puts "Firing I.... #{action}"
+                    action = plant["Action"]
+
+                    # Resolve any variables that are present in the action.
 
                     action = resolveVariables(action, dataDictionary)
-                    puts "Firing II... #{action}"
+                    puts "Firing... #{action}" if $DEBUG
+
+                    # Invoke the action for the plant.
 
                     planterboxActionEvaluator = PlanterboxActionEvaluatorConstructC.new
                     dataDictionary = planterboxActionEvaluator.invokeAction(action, dataDictionary)
 
-                    puts "dataDictionary post firing is #{dataDictionary}"
                 end
 
             end
-
 
         rescue => e
             # Catch, log and throw all exceptions.
@@ -134,46 +161,53 @@ class PlanterboxBOC
 	end
 
 
-    private
-
+    # resolveVariables
+    #
+    # [in]: stringLine - the String to Evaluate
+    # [in]: dataDictionary - the dictionary of variables that can be resolved
 
     def resolveVariables(stringline, dataDictionary)
 
         begin 
 
-            puts ("===============================stringline = #{stringline}")
+            # Using regex, split the string (e.g., either a condition or action)
+            # into its tokens.
 
             tempStringArray = stringline.split(/(\w*\$\w+\$)/)
 
             newStringLine = ""
 
+            # Iterate over the tokens.
+
             for token in tempStringArray do
 
-                puts ("Token = #{token}")
+                # Check to see if the token is a variable (e.g., $var$).
 
                 if (token.match(/\w*\$\w+\$/))
-                   puts "VARIABLE!!!!"
 
-                   # Remove the $ delimiters.
+                   # Variable is present - remove the $ delimiters.
 
                    token.delete! "$"
-                   puts ("NTOKE = #{token}")
+
+                   # Look up the data value for this variable in the 
+                   # data dictionary Hashtable and set that as the new token
+                   # value.
 
                    token = dataDictionary[token.upcase]
 
-                   puts "TOKEN   NOW IS #{token}"
+                   puts "TOKEN   NOW IS #{token}" if $DEBUG
                 end
+
+                # Set the new string (e.g., condition, action) to include the
+                # token value.
 
                 newStringLine += token #+ " "
 
             end
 
+            puts ("Resolved variables: #{newStringLine}") if $DEBUG
 
-        #    if tempString != nil
-
-                puts ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!FINAL = #{newStringLine}")
-       #         puts ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!tempString1 = #{tempString[1]}")
-        #    end
+            # Return the new string that will include all resolved variables.
 
             return newStringLine
 

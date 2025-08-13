@@ -1,11 +1,13 @@
 # PlanterboxDAOC.rb
 #
-# Planterbox Data Access Object
+# The Data Access Object for Planterbox.
 #
 
 # Import libraries.
 
 require_relative "PlanterboxTOC.rb"
+
+# Class: PlanterboxDAOC
 
 class PlanterboxDAOC
 
@@ -15,10 +17,11 @@ class PlanterboxDAOC
     def initialize(planterboxTO)
 
         begin
+            # Initialize the class attributes.
 
             @planterboxTO = planterboxTO
 
-            @ruleArray = planterboxTO.ruleArray
+            @plantArray = planterboxTO.plantArray
 
             @thisClass = "PlanterboxDAOC"
 
@@ -32,18 +35,33 @@ class PlanterboxDAOC
     end
 
 
-    def loadPlanterbox
+    # fillThePlanterbox
+
+    def fillThePlanterbox
 
         begin
-            puts "#{@thisClass}:loadPlanterbox" if $INFO
+            puts "#{@thisClass}:fillThePlanterbox" if $INFO
 
-            # Load the rules file.
+            # To fill the Planterbox with plants, first get the Garden Plan to get
+            # the set of plants (i.e., rules) that will be planted in the Planterbox.
 
-            loadRulesFile
+            gardenPlan = getGardenPlan
 
-            puts "RuleArray: #{@ruleArray}"
+            # Iterate over the Garden Plan and fill the Planterbox with plants.
 
-            @planterboxTO.ruleArray = @ruleArray
+            for garden in gardenPlan do
+
+                # Get the plants from each garden in the garden plan.
+
+                getPlants(garden)
+
+            end
+
+            puts "plantArray: #{@plantArray}"
+
+            # Store the complete set of plants in the Planterbox.
+
+            @planterboxTO.plantArray = @plantArray
 
             return @planterboxTO
 
@@ -56,57 +74,113 @@ class PlanterboxDAOC
     end  
 
 
+
     # Private methods.
 
     private 
 
 
+    # getGardenPlan
 
-    # loadRulesFile
-
-    def loadRulesFile
+    def getGardenPlan
 
         begin
-            puts "#{@thisClass}:loadRulesFile" if $INFO
 
-            rule = ""
-            ruleID = "None"
+            # Initialize the Garden Plan Array.
 
-            File.open(@planterboxTO.rulesFile, "r").each do |ruleLine|
+            gardenPlanArray = Array.new
 
-                ruleLine.strip!
-                puts "#{ruleLine}"
-                if ruleLine.start_with?(/#\s*RuleID/)
+            File.open(@planterboxTO.gardenPlanFile, "r").each do |gardenPlanLine|
+
+                # Remove all whitespace and add the garden plan to the set of Garden Plans
+                # that will comprise the Planterbox.
+
+                gardenPlanLine.strip!
+
+                puts "Examining: #{gardenPlanLine}"
+                if (gardenPlanLine.start_with?("plant"))
+
+                    # This is a garden to plant.
+
+                    garden = (gardenPlanLine.split(/\s*plant/))[1].strip
+
+                    puts "Adding: #{garden}"
+                    gardenPlanArray.push(garden)
+
+
+                elsif (gardenPlanLine.start_with?("#"))
+
+                    # A comment.  Disregard.
+
+                else
+                    # Unexpected.  Disregard.
+
+                end
+
+
+            end
+
+            # Return the Garden Plan.
+
+            return gardenPlanArray
+
+
+        rescue => e
+            # Catch, log and raise all exceptions.
+            puts "ERROR: #{e.message}"
+            raise e
+        end
+
+    end
+
+
+    # getPlants
+
+    def getPlants(garden)
+
+        begin
+            puts "#{@thisClass}:getPlants" if $INFO
+
+            plant = ""
+            plantID = "None"
+
+            # Open the garden and get the plants.
+
+            File.open(garden, "r").each do |plantLine|
+
+                plantLine.strip!
+                puts "#{plantLine}"
+                if plantLine.start_with?(/#\s*RuleID/)
                     # Rule ID: remove colons and whitespace
 
-                    ruleID = (ruleLine.split(/#\s*RuleID/))[1].delete_prefix(":").strip
-                    puts "ruleID ==> #{ruleID}" if $INFO
+                    plantID = (plantLine.split(/#\s*RuleID/))[1].delete_prefix(":").strip
+                    puts "plantID ==> #{plantID}" if $INFO
 
-                elsif ruleLine.start_with?("#")
+                elsif plantLine.start_with?("#")
 
                     # Comment.  Move to the next line.
 
-                elsif ruleLine.end_with?(";")
+                elsif plantLine.end_with?(";")
 
-                    # The last rule line has been read.
+                    # The last plant line has been read.
 
-                    rule = (rule.concat(" ", ruleLine)).strip
+                    plant = (plant.concat(" ", plantLine)).strip
 
-                    # Parse the rule into its condition and action and add
-                    # the rule hash to the rule array.
+                    # Parse the plant into its condition and action and add
+                    # the plant hash to the plant array.
 
-                    @ruleArray.push(parseRule(ruleID, rule))
+                    @plantArray.push(parsePlant(plantID, plant))
 
-                    # Reset the rule info for the next rule.
+                    # Reset the plant info for the next plant.
 
-                    rule = ""
-                    ruleID = "None"
+                    plant = ""
+                    plantID = "None"
 
                 else
 
-                    # Keep adding the line to the rule.
+                    # Keep adding the line to the plant.
 
-                    rule.concat(" ", ruleLine)
+                    plant.concat(" ", plantLine)
                 end 
 
             end
@@ -121,47 +195,47 @@ class PlanterboxDAOC
     end 
 
 
-    # parseRule
+    # parsePlant
 
-    def parseRule(ruleID, ruleString)
+    def parsePlant(plantID, plantString)
 
         begin
-            puts "#{@thisClass}:parseRule" if $INFO
+            puts "#{@thisClass}:parsePlant" if $INFO
 
-            ruleHash = Hash.new
+            plantHash = Hash.new
 
-            if (ruleString.upcase.start_with?("IF"))
+            if (plantString.upcase.start_with?("IF"))
 
                 # Remove the IF.
 
-                ruleString = ruleString[3, ruleString.length]
+                plantString = plantString[3, plantString.length]
 
                 # Parse the THEN.
 
-                actionIndex = ruleString.upcase.index("THEN")
+                actionIndex = plantString.upcase.index("THEN")
 
                 if (actionIndex != nil)
 
-                    condition = ruleString[0, actionIndex]
-                    action = ruleString[actionIndex+5, ruleString.length]
+                    condition = plantString[0, actionIndex]
+                    action = plantString[actionIndex+5, plantString.length]
                 else
                     # Missing then "THEN".
 
-                    raise "ERROR: No THEN found in rule: #{ruleString}"
+                    raise "ERROR: No THEN found in plant: #{plantString}"
                 end
 
                 condition.concat(";")
 
-                ruleHash["ID"] = ruleID
-                ruleHash["Condition"] = condition
-                ruleHash["Action"] = action 
+                plantHash["ID"] = plantID
+                plantHash["Condition"] = condition
+                plantHash["Action"] = action 
             else
                 # Missing the "IF".
                                     
-                raise "ERROR: No IF found in rule: #{ruleString}"
+                raise "ERROR: No IF found in plant: #{plantString}"
             end  
 
-            return ruleHash
+            return plantHash
 
         rescue => e 
             # Catch, log and raise all exceptions.

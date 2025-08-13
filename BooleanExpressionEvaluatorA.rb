@@ -1,11 +1,19 @@
 # BooleanExpressionEvaluatorA.rb
 #
+# Abstract class for evaluating boolean expressions.
+
+# Class: BooleanExpressionEvaluatorA
 
 class BooleanExpressionEvaluatorA
+
+    # Define attributes.
 
     attr_accessor  :booleanExpression, :dataDictionary, :postToken, :leftOperand, :currentTokenIndex
 
     # Constructor
+    #
+    # [in]: booleanExpression - the boolean expression to evaluate
+    # [in]: dataDictionary - the dictionary of variables (keyword-value pairs)
 
     def initialize(booleanExpression, dataDictionary)
     
@@ -13,20 +21,30 @@ class BooleanExpressionEvaluatorA
 
             @booleanExpression = Array.new
 
+            # Split the boolean expression based the language constructs.
+
             @tempExpression = booleanExpression.split(/(?<=[\!\[\]\)])/).map(&:strip)
 
-            puts "Parsed boolean expression #{@tempExpression}" if $INFO
+            puts "Parsed boolean expression #{@tempExpression}" if $DEBUG
+
+            # Iterate over the tokens in the expression.
 
             for token in @tempExpression do
 
-                puts "Token: #{token}"
+                puts "Token: #{token}" if $DEBUG
+
+                # Determine if the token is an AND or OR.
+
                 if token.upcase.start_with?("AND")
 
-                    puts "!!!! AND"
+                    # AND clause.
+
                     @booleanExpression.push("AND")
                     token = (token.split("AND", 2).map(&:strip))[1]
 
                 elsif token.upcase.start_with?("OR")
+
+                    # OR clause.
 
                     @booleanExpression.push("OR")
                     token = (token.split("OR", 2).map(&:strip))[1]
@@ -50,6 +68,8 @@ class BooleanExpressionEvaluatorA
 
     end
 
+    
+    # evaluateBooleanExpression
 
     def evaluateBooleanExpression
 
@@ -59,10 +79,17 @@ class BooleanExpressionEvaluatorA
 
             leftBoolResult = evaluateOrExpression
 
+            # Determine if the end of line character has been reached.
+
             if @postToken == ";"
+
+                # It has, therefore return the result of the boolean expression.
 
                 return leftBoolResult
             else
+
+                # Otherwise, the end of line expression is missing.
+
                 raise "ERROR: missing end of boolean expression token - ; in #{@booleanExpression}"
             end 
 
